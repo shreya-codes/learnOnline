@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import  jwt from "jsonwebtoken";
 
 const UserSchema = new mongoose.Schema({
     name:{
@@ -34,5 +35,15 @@ const UserSchema = new mongoose.Schema({
         type: Date
     }
 })
+
+UserSchema.methods.generateAuthToken = () =>{
+    try {
+        const token = jwt.sign({ _id: this._id, role: this.role }, process.env.SECRET_KEY); 
+        return token
+    } catch (error) {
+        console.log(error,'Error while generating auth token ')
+    }
+
+}
 
 export default mongoose.model('User',UserSchema)
