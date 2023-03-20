@@ -1,12 +1,12 @@
 import bcrypt from 'bcryptjs'
+import crypto from "crypto"
 import jwt  from 'jsonwebtoken';
+import User from '../../../../login/models/User';
 
 const encryptPassword = async (saltRounds,password) => {
-    console.log('a-----pp')
     let salt = await bcrypt.genSalt(saltRounds);
     console.log(salt,'salt')
     let hashedPassword = await bcrypt.hash(password,salt);
-    console.log(hashedPassword,'-----')
     return hashedPassword;
 }
 const decryptPassword = async () =>{
@@ -21,15 +21,37 @@ const generateAuthToken = async(_id,role) =>{
     }
 
 }
+const sendEmail = async () =>{
+    try {
+        console.log("in send email")
+    } catch (error) {
+        throw new Error("Invalid email or password") 
+    }
+}
 const comparePassword = async (enteredPW,userPW) =>{ 
 try {
-    let comparedPW= bcrypt.compare(enteredPW,userPW)
+    let comparedPW= await bcrypt.compare(enteredPW,userPW)
     console.log(comparedPW,'compared pw ')
 } catch (error) {
    throw new Error("Invalid email or password") 
 }}
+const generateToken=async(id)=>{
+    const user =await User.findOne({_id:id});
+    if(user){
+        let token = await crypto.randomBytes(128).toString("hex")
+        let token_expires = new Date(now.getTime()+60*60*1000).getTime();
+        console.log(token,token_expires)
+        await User.updateOne({_id:req.params.id},{$set:{token:token,tokenExpires:token_expires} })
+        return token
+    }else{
+        throw new Error("User not found")
+    }
+
+}
 export default {
     encryptPassword,
     generateAuthToken,
-    comparePassword
+    comparePassword,
+    sendEmail,
+    generateToken
 }

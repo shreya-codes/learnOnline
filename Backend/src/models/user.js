@@ -33,6 +33,12 @@ const UserSchema = new mongoose.Schema({
     },
     updatedAt:{
         type: Date
+    },
+    token:{
+        type: String
+    },
+    tokenExpires:{
+        type: Date
     }
 })
 

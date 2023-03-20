@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import {createBrowserRouter, RouterProvider} from 'react-router-dom'
+import Login from './components/Login.js'
+import Register from './components/Register'
+import ForgotPassword from './components/ForgotPassword'
+import PageNotFound from './components/PageNotFound'
+import Profile from './components/Profile'
+import Username from './components/Username.js'
 
-function App() {
+const router =createBrowserRouter([
+{  path:'/',
+  element:<Username/>},
+  {
+    path: '/register',
+    element: <Register/>
+  },
+  {
+    path: '/login',
+    element: <Login/>
+  },{
+    path: '/forgotPassword',
+    element: <ForgotPassword/>
+  },{
+    path: '/profile',
+    element: <Profile/>
+  },{
+    path: '*',
+    element: <PageNotFound/>
+  }
+])
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <main>
+      <RouterProvider router={router}>
+
+      </RouterProvider>
+    </main>
+//     <div className='flex w-full h-screen '>
+//       <div className='bg-gray-300 w-full flex items-center justify-center lg:w-1/2  '>
+// <Login />
+//       </div>
+//       <div className='hidden lg:flex h-full w-1/2 items-center justify-center bg-gray-200' > 
+//       <div className='w-60 h-60 bg-gradient-to-tr from-violet-500 to-pink-500 rounded-full'> </div>
+       
+//       </div>
+//     </div>
+  )
 }
 
-export default App;
+export default App

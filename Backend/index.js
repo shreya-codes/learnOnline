@@ -71,11 +71,9 @@ app.use((req, res, next) => {
   
   // Add passport middleware
   app.use(passport.initialize());
-  app.use(passport.session());
-
   // Add session middleware
 app.use(session({
-    secret: 'your secret key',
+    secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: false
   }));

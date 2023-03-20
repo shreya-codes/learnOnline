@@ -1,14 +1,14 @@
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcrypt";
-import User  from "../configs/passport";
+import User  from "../models/user.js";
 import passport from "passport";
 
-const localStratergy = async (email,enteredPW,userPW,done) => {
+const localStratergy = async (email,password,done) => {
     try {
-        console.log(email,enteredPW,userPW," user logged in -------------------------------------------------")
+        console.log(email,password," user logged in -------------------------------------------------")
         const user = await User.findOne({email:email})
         if(user){
-           let isMatch =  await bcrypt.compare(enteredPW,userPW)
+           let isMatch =  await bcrypt.compare(password,user.password)
            console.log(isMatch, 'isMatch')
            if(isMatch){
             return done(null,user);
@@ -26,18 +26,18 @@ return done(error)
     }
 }
 
-const passportConfig = async (email,enteredPW,userPW,userId) =>{
+const passportConfig = async (email,password,done) =>{
     try {
-        passport.use(new LocalStrategy(localStratergy))
-        passport.serializeUser= (userId, done)=> {
-            done(null, userId);
-          };
+        passport.use(new LocalStrategy({usernameField:'email'},localStratergy))
+        passport.serializeUser((user, done)=> {
+            done(null, user.id);
+          });
           
-          passport.deserializeUser= async (id, done)=> {
-           const user=  await User.findById(id);
-           done(err, user);
+          passport.deserializeUser(async (id, done)=> {
+           const user=  await User.findOne({_id:id});
+           done(null, user);
         
-        }        
+        }   )     
     } catch (error) {
         return done(error)
     }
